@@ -1,13 +1,16 @@
 import React, { useRef } from "react";
 import { createClient } from "contentful-management";
 
+const CMA_TOKEN = process.env.CONTENTFUL_CMA_TOKEN;
+
 const Upload = () => {
   const inputRef = useRef(null);
   const handleUpload = async () => {
     const file = inputRef.current.files[0];
     console.log(file);
+    console.log(CMA_TOKEN);
     const client = createClient({
-      accessToken: process.env.CONTENTFUL_CMA_TOKEN,
+      accessToken: CMA_TOKEN,
     });
     try {
       const space = await client.getSpace("zu7mvllbia1d");
