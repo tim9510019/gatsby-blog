@@ -5,8 +5,7 @@ const Upload = () => {
   const inputRef = useRef(null);
   const handleUpload = async () => {
     const file = inputRef.current.files[0];
-    const formData = new FormData();
-    formData.append("file", file);
+    console.log(file);
     const client = createClient({
       accessToken: process.env.CONTENTFUL_CMA_TOKEN,
     });
@@ -16,10 +15,10 @@ const Upload = () => {
       const asset = await environment.createAssetFromFiles({
         fields: {
           title: {
-            "en-US": "Test10",
+            "en-US": file.name,
           },
           description: {
-            "en-US": "測試10",
+            "en-US": file.name,
           },
           file: {
             "en-US": {
@@ -31,12 +30,6 @@ const Upload = () => {
         },
       });
       const processedAsset = await asset.processForAllLocales();
-      console.log("haha");
-      await new Promise((resolve) => {
-        setTimeout(() => {
-          resolve(); // 表示setTimeout執行完畢，可以繼續執行後續的代碼
-        }, 5000); // 1000毫秒，即1秒後執行console.log('haha')
-      });
       await processedAsset.publish();
       console.log("測試成功");
     } catch (error) {
