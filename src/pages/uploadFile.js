@@ -1,16 +1,13 @@
 import React, { useRef } from "react";
 import { createClient } from "contentful-management";
-
-const CMA_TOKEN = process.env.CONTENTFUL_CMA_TOKEN;
+import axios from "axios";
 
 const Upload = () => {
   const inputRef = useRef(null);
   const handleUpload = async () => {
     const file = inputRef.current.files[0];
-    console.log(file);
-    console.log(CMA_TOKEN);
     const client = createClient({
-      accessToken: CMA_TOKEN,
+      accessToken: "CFPAT-HUff-EDrdIbTmXX4JsJIhRoSVgePgQZXtR3IYr9As40",
     });
     try {
       const space = await client.getSpace("zu7mvllbia1d");
@@ -39,11 +36,21 @@ const Upload = () => {
       console.log(error);
     }
   };
+  const handleUploadBackend = async () => {
+    const file = inputRef.current.files[0];
+    const formData = new FormData();
+    formData.append("file", file);
+    const res = await axios.post("/api/upload", formData);
+    console.log(res);
+  };
   return (
     <div>
       <input type="file" ref={inputRef} />
       <button className="px-2 py-1 border-2" onClick={handleUpload}>
-        上傳檔案
+        從前端上傳檔案
+      </button>
+      <button className="px-2 py-1 border-2" onClick={handleUploadBackend}>
+        上傳檔案至後端
       </button>
     </div>
   );

@@ -1,6 +1,7 @@
 import { createClient } from "contentful-management";
 
 export default async function upload(req, res) {
+  console.log(req.files[0]);
   const file = req.files[0];
   const client = createClient({
     accessToken: process.env.CONTENTFUL_CMA_TOKEN,
@@ -11,16 +12,16 @@ export default async function upload(req, res) {
     const asset = await environment.createAssetFromFiles({
       fields: {
         title: {
-          "en-US": file.name,
+          "en-US": file.originalname,
         },
         description: {
-          "en-US": file.name,
+          "en-US": "Back",
         },
         file: {
           "en-US": {
-            contentType: file.type,
-            fileName: file.name,
-            file: file,
+            contentType: file.mimetype,
+            fileName: file.fieldname,
+            file: file.buffer,
           },
         },
       },
@@ -28,8 +29,9 @@ export default async function upload(req, res) {
     const processedAsset = await asset.processForAllLocales();
     await processedAsset.publish();
     console.log("測試成功");
+    res.send("成功上傳");
   } catch (error) {
     console.log(error);
+    res.send("上傳失敗");
   }
-  res.send("連接upload成功");
 }
